@@ -24,10 +24,25 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         await client.connect();
+
+
+        const complatedEvent = client.db("hopehues").collection("event");
+        const upCommingEvent = client.db("hopehues").collection("upcommingevent");
+
+        app.get('/event', async (req, res) => {
+            const result = await complatedEvent.find().toArray();
+            res.send(result);
+        })
+        app.get('/upcommingevent', async (req, res) => {
+            const upEvent = await upCommingEvent.find().toArray();
+            res.send(upEvent);
+        })
+
+
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
-        await client.close();
+        // await client.close();
     }
 }
 run().catch(console.dir);
